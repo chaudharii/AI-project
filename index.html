@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Football Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 100%;
+            width: 100%;
+            background: #2a2a2a;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0f3460, #16a085);
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            background: black;
+        }
+        
+        .video-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .info {
+            padding: 20px;
+            background: #1a1a1a;
+        }
+        
+        .status-display {
+            font-size: 18px;
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+        
+        .gesture-display {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 15px;
+            border: 2px solid #ff00ff;
+            background: rgba(255, 0, 255, 0.1);
+            text-align: center;
+            color: #ff00ff;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(100, 200, 255, 0.1);
+            border-left: 4px solid #64c8ff;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .instructions h3 {
+            color: #64c8ff;
+            margin-bottom: 10px;
+        }
+        
+        .instructions p {
+            margin: 5px 0;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+        
+        .legend-item {
+            background: rgba(100, 100, 100, 0.3);
+            padding: 8px;
+            border-radius: 5px;
+        }
+        
+        .legend-item strong {
+            color: #64c8ff;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .gesture-display {
+                font-size: 20px;
+            }
+            
+            .instructions {
+                font-size: 12px;
+            }
+            
+            .legend {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 AI FOOTBALL CONTROL 🎮</h1>
+            <p style="font-size: 12px; margin-top: 5px;">Control your game with body gestures</p>
+        </div>
+        
+        <div class="video-container">
+            <img src="/video_feed" alt="Live Video Feed">
+        </div>
+        
+        <div class="info">
+            <div class="status-display" id="status">
+                Loading...
+            </div>
+            
+            <div class="gesture-display" id="gesture">
+                WAITING FOR POSE
+            </div>
+            
+            <div class="instructions">
+                <h3>📋 How to Control:</h3>
+                <p>✅ Move LEFT SHOULDER forward → MOVE LEFT</p>
+                <p>✅ Move RIGHT SHOULDER forward → MOVE RIGHT</p>
+                <p>✅ Raise HIPS up → SPRINT</p>
+                <p>✅ Raise LEFT LEG up → KICK</p>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <strong>Status:</strong>
+                    <span id="status-text">Initializing...</span>
+                </div>
+                <div class="legend-item">
+                    <strong>Command:</strong>
+                    <span id="gesture-text">WAITING</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Update status every 500ms
+        setInterval(function() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('gesture').textContent = data.gesture.toUpperCase();
+                    document.getElementById('status').textContent = data.status;
+                    document.getElementById('gesture-text').textContent = data.gesture;
+                    document.getElementById('status-text').textContent = data.status;
+                });
+        }, 500);
+    </script>
+</body>
+</html>
